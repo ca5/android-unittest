@@ -34,6 +34,10 @@ public class SampleClass implements SharedPreferenceListener{
         return sp.getString(SHARED_PREFERENCE_KEY, null);
     }
 
+    public void getSharedPreferenceAsyncWithListener(SharedPreferenceListener listener){
+        new SharedPreferenceTask(listener).execute();
+    }
+
     public void getSharedPreferenceAsync(){
         new SharedPreferenceTask(this).execute();
     }

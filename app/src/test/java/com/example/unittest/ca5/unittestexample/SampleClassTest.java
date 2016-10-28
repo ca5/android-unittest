@@ -37,18 +37,28 @@ public class SampleClassTest {
         sample.setSharedPreference("hoge");
         assertEquals("hoge", sample.getSharedPreference());
 
-        //Async
-        SampleClass sampleAsync = new SampleClass(mContext, new SampleClassListener(){
+        //Async1
+        SampleClass sampleSpy1 = spy(sample);
+        sampleSpy1.setSharedPreference("fuga");
+        sampleSpy1.getSharedPreferenceAsyncWithListener(new SharedPreferenceListener() {
+            @Override
+            public void receiveSharedPreference(String string) {
+                assertEquals("fuga", string);
+            }
+        });
+
+        //Async2
+        SampleClass sampleAsync2 = new SampleClass(mContext, new SampleClassListener(){
             //dummy
             @Override
             public void receiveString(String string) {
                 return;
             }
         });
-        SampleClass sampleSpy = spy(sampleAsync);
-        sampleSpy.setSharedPreference("fuga");
-        sampleSpy.getSharedPreferenceAsync();
-        verify(sampleSpy, timeout(2000).times(1)).receiveSharedPreference(eq("fuga"));
+        SampleClass sampleSpy2 = spy(sampleAsync2);
+        sampleSpy2.setSharedPreference("piyo");
+        sampleSpy2.getSharedPreferenceAsync();
+        verify(sampleSpy2, timeout(2000).times(1)).receiveSharedPreference(eq("piyo"));
     }
 
     @After
