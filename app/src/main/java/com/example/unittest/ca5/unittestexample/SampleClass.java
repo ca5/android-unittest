@@ -9,10 +9,15 @@ import android.preference.PreferenceManager;
  * Created by ca5 on 2016/10/23.
  */
 
-public class SampleClass {
+public class SampleClass implements SharedPreferenceListener{
     private final static String SHARED_PREFERENCE_KEY = "sample_key";
     private Context mContext = null;
+    private SampleClassListener mSampleClassListener = null;
     public SampleClass(Context context){
+        mContext = context;
+    }
+    public SampleClass(Context context, SampleClassListener listener){
+        mSampleClassListener = listener;
         mContext = context;
     }
     private SampleClass(){} // do nothing
@@ -23,13 +28,21 @@ public class SampleClass {
         System.out.println("set:" + getSharedPreference());
     }
 
+
     public String getSharedPreference(){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         return sp.getString(SHARED_PREFERENCE_KEY, null);
     }
 
-    public void getSharedPreferenceAsync(SharedPreferenceListener listener){
-        new SharedPreferenceTask(listener).execute();
+    public void getSharedPreferenceAsync(){
+        new SharedPreferenceTask(this).execute();
+    }
+
+    @Override
+    public void receiveSharedPreference(String string) {
+        if (mSampleClassListener != null){
+            mSampleClassListener.receiveString(string);
+        }
     }
 
     public class SharedPreferenceTask extends AsyncTask {
